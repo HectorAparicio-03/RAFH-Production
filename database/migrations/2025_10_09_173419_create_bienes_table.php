@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('bienes', function (Blueprint $table) {
             $table->id();
             $table->string('bien_codigo')->unique();
-            //$table->string('bien_ubicacion_actual');
             $table->foreignId('id_oficina')
                   ->nullable()
                   ->constrained('oficinas')
@@ -31,10 +30,10 @@ return new class extends Migration
             $table->string('bien_clave');
             $table->string('bien_y');
             $table->string('bien_secuencia');
+            $table->string('bien_sec_alfabetica')->nullable();
             $table->string('bien_provedor');
             $table->string('bien_numero_factura');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
