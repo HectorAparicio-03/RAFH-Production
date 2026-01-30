@@ -1,0 +1,59 @@
+services:
+  laravel.test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: rafh-api:latest
+    container_name: rafh-api
+    restart: always
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    ports:
+      - '${APP_PORT:-80}:80'
+    environment:
+      WWWUSER: '${WWWUSER}'
+      LARAVEL_SAIL: 1
+      BROADCAST_CONNECTION: reverb
+    volumes:
+      - '.:/var/www/html'
+      - vendor_data:/var/www/html/vendor
+    networks:
+      - sail
+    depends_on:
+      - postgres
+
+  reverb:
+    image: rafh-api:latest
+    container_name: rafh-reverb
+    restart: always
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080
+    ports:
+      - "8080:8080"
+    env_file: .env
+    networks:
+      - sail
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:15
+    container_name: rafh-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - sail
+
+networks:
+  sail:
+    driver: bridge
+
+volumes:
+  pgdata:
+  vendor_data:

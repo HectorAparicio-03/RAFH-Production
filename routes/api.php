@@ -37,6 +37,10 @@ use Illuminate\Support\Facades\Broadcast;
 |--------------------------------------------------------------------------
 */
 
+
+Route::get('/ping',function () {
+    return response()->json(['msj'=>'pong']);
+});
 // Middleware global para limpiar tokens expirados en todas las rutas API
 Route::middleware([\App\Http\Middleware\CleanExpiredTokens::class])->group(function () {
     // Endpoints públicas para autenticación
